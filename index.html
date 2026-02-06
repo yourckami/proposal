@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>💜</title>
+
+  <!-- BACKGROUND MUSIC -->
+  <audio id="bgMusic" loop>
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+
+  <style>
+    :root{
+      --bg: #c9a3ff;
+      --card: rgba(255,255,255,.14);
+      --border: rgba(255,255,255,.25);
+      --sage: #9caf88;
+      --red: #ef4444;
+      --text: #ffffff;
+      --shadow: #000000;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(255,255,255,.22), transparent),
+                  radial-gradient(900px 600px at 90% 80%, rgba(0,0,0,.12), transparent),
+                  var(--bg);
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color: var(--text);
+    }
+
+    .slide{
+      width:min(920px, 94vw);
+      border-radius:22px;
+      padding:46px 42px;
+      background: linear-gradient(180deg, rgba(255,255,255,.12), transparent), var(--card);
+      border:1px solid var(--border);
+      box-shadow: 0 24px 70px rgba(0,0,0,.28);
+      backdrop-filter: blur(10px);
+    }
+
+    .text{
+      font-size: clamp(22px, 3vw, 40px);
+      line-height: 1.35;
+      margin: 0;
+      font-weight: 750;
+      color: var(--text);
+
+      text-shadow:
+        -1px -1px 0 var(--shadow),
+         1px -1px 0 var(--shadow),
+        -1px  1px 0 var(--shadow),
+         1px  1px 0 var(--shadow),
+         0px  2px 0 rgba(0,0,0,.45);
+
+      white-space: pre-wrap;
+    }
+
+    .hint{
+      margin-top: 18px;
+      font-size: 14px;
+      opacity: .95;
+    }
+
+    .nav{
+      margin-top: 26px;
+      display:flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+
+    button{
+      cursor:pointer;
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 16px;
+      font-weight: 750;
+      color: var(--text);
+      box-shadow: 0 10px 24px rgba(0,0,0,.18);
+      transition: transform .08s ease;
+    }
+
+    button:active{
+      transform: translateY(1px) scale(0.99);
+    }
+
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
+    .next, .yes{ background: var(--sage); }
+    .back, .no{ background: var(--red); }
+
+    .tinyNo{
+      padding: 2px 5px;
+      font-size: 10px;
+      border-radius: 8px;
+      opacity: .85;
+    }
+
+    .fade{
+      animation: fadeIn .22s ease-out;
+    }
+
+    @keyframes fadeIn{
+      from{ opacity:0; transform: translateY(4px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="slide">
+    <p id="slideText" class="text fade"></p>
+
+    <div id="nav" class="nav"></div>
+  </main>
+
+<script>
+
+  /* ================= MUSIC AUTOPLAY ================= */
+
+  const bgMusic = document.getElementById("bgMusic");
+
+  // Try autoplay immediately
+  window.addEventListener("load", () => {
+    bgMusic.volume = 0.6; // softer volume
+    bgMusic.play().catch(() => {});
+  });
+
+  // Force play after first interaction (fixes browser blocking)
+  function startMusic() {
+    bgMusic.play().catch(() => {});
+    document.removeEventListener("click", startMusic);
+    document.removeEventListener("keydown", startMusic);
+  }
+
+  document.addEventListener("click", startMusic);
+  document.addEventListener("keydown", startMusic);
+
+  /* ================================================ */
+
+
+  // Main flow
+  const mainSlides = [
+    `maayong adlaw ma'am billee, finally it's February 11 :>`,
+    `were you as excited as me, bab? ;)`,
+    `honestly, the moment you told me to propose on this date made my heart flutter >///<`,
+    `you have no idea how much it means to me, how much you mean to me :>`,
+    `the talking stage, the whole dating, how we connected so deeply in all aspects despite the distance, how we grew it into love (and still growing it) how we made our own world where we both feel safe and just ourselves, how in a short time, i became so sure of you <3`,
+    `i am so sure of you that most of the time, i only want to stay in our own world..`,
+    `i am so sure of you that i also want to share my own world with you..`,
+    `i am so sure of you that i only want to live my whole life with you..`,
+    `to keep learning, growing, healing, changing, to feel the love and pain of life with you..`,
+    `i am so sure of you that i don't want you to just be my girlfriend, i want you to be my wife..`,
+    `1+1=11 for the 11th slide of the 11th of February, year 2026 (best year of my life so far, since we'll create more)`,
+    `you can't see me kneeling right now, but i am (lol)`,
+    `i can't put the ring on your finger yet if you say yes, but`,
+    `i mean, we'll see each other the day after tomorrow`,
+    `so i'm sure i will give it to you even if your answer is no (please don't click no)`,
+    `will you be my beloved wife? 💜`
+  ];
+
+  const yesSlides = [
+    `yay, you're mine now, officially ^_____^`,
+    `i love you from your head to your bilat, to your toes and back XD`,
+    `thank you for saying yes, my pretty, cute, funny, witty, smart, hardworking, goal-oriented, family-oriented, very very talented girlfriend, has emotional intelligence and maturity, and all the good traits i've been looking for all my life, so ang point ko is, kaya gagalingan ko para makabawi ako sayo since nasa iyo na lahat HAHAHAHAHAHAHA`,
+    `i can't wait to see you, be with you, hug you, kiss you, cuddle you, touch you, and of course, do all the freakiness with you, only you :p`,
+    `see you soon my girlfriend, my wife, my bab, my only exception, my beloved 💜`,
+    `22nd slide since you married me on Discord on January 22, 2026, marry me irl too, oke? magpayaman muna ako hehe`
+  ];
+
+  const noSlides = [
+    `we'll take our time bab...`,
+    `i would love to take our time and use it to prepare my table for you, i love you more :>`
+  ];
+
+
+  const elText = document.getElementById("slideText");
+  const elNav  = document.getElementById("nav");
+
+  let mode = "main";
+  let i = 0;
+
+
+  function currentDeck(){
+    if (mode === "main") return mainSlides;
+    if (mode === "yes") return yesSlides;
+    return noSlides;
+  }
+
+  function isProposalSlide(){
+    return (mode === "main" && i === mainSlides.length - 1);
+  }
+
+  function render(){
+
+    const deck = currentDeck();
+
+    elText.classList.remove("fade");
+    void elText.offsetWidth;
+    elText.classList.add("fade");
+
+    elText.textContent = deck[i];
+
+    elNav.innerHTML = "";
+
+    const backBtn = document.createElement("button");
+    backBtn.className = "back";
+    backBtn.textContent = "Back";
+    backBtn.disabled = (i === 0);
+
+    backBtn.onclick = () => {
+      if(i>0){
+        i--;
+        render();
+      }
+    };
+
+
+    if (isProposalSlide()){
+
+      const yesBtn = document.createElement("button");
+      yesBtn.className = "yes";
+      yesBtn.textContent = "Yes";
+
+      yesBtn.onclick = () => {
+        mode = "yes";
+        i = 0;
+        render();
+        confetti();
+      };
+
+
+      const noBtn = document.createElement("button");
+      noBtn.className = "no tinyNo";
+      noBtn.textContent = "No";
+
+      noBtn.onclick = () => {
+        mode = "no";
+        i = 0;
+        render();
+      };
+
+
+      elNav.appendChild(backBtn);
+      elNav.appendChild(yesBtn);
+      elNav.appendChild(noBtn);
+
+    } else {
+
+      const nextBtn = document.createElement("button");
+      nextBtn.className = "next";
+      nextBtn.textContent = "Next";
+      nextBtn.disabled = (i === deck.length - 1);
+
+      nextBtn.onclick = () => {
+        if(i < deck.length - 1){
+          i++;
+          render();
+        }
+      };
+
+      elNav.appendChild(backBtn);
+      elNav.appendChild(nextBtn);
+    }
+
+
+    document.title =
+      mode === "main" ? "💜" :
+      mode === "yes"  ? "💜 yes 💜" : "💜";
+  }
+
+
+  document.addEventListener("keydown", (e) => {
+
+    const deck = currentDeck();
+
+    if (e.key === "ArrowLeft" && i > 0){
+      i--;
+      render();
+    }
+
+    if (e.key === "ArrowRight" && !isProposalSlide() && i < deck.length - 1){
+      i++;
+      render();
+    }
+  });
+
+
+  function confetti(){
+
+    for(let k=0;k<120;k++){
+
+      const d=document.createElement("div");
+
+      d.style.position="fixed";
+      d.style.left=(Math.random()*100)+"vw";
+      d.style.top="-10px";
+      d.style.width="8px";
+      d.style.height="12px";
+      d.style.borderRadius="2px";
+      d.style.background=`hsl(${Math.random()*360},90%,60%)`;
+      d.style.opacity="0.9";
+      d.style.transform=`rotate(${Math.random()*360}deg)`;
+      d.style.zIndex=9999;
+
+      document.body.appendChild(d);
+
+      const fall= 700 + Math.random()*900;
+
+      d.animate(
+        [
+          { transform:d.style.transform, top:"-10px" },
+          { transform:`rotate(${Math.random()*720}deg)`, top:"110vh" }
+        ],
+        {
+          duration: fall,
+          easing:"cubic-bezier(.2,.8,.2,1)"
+        }
+      );
+
+      setTimeout(()=>d.remove(), fall);
+    }
+  }
+
+
+  render();
+
+</script>
+</body>
+</html>
